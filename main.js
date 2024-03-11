@@ -1,55 +1,86 @@
+//CREATE AXIOS 
+
+const axiosClient = axios.create({
+
+    baseURL: `https://jsonplaceholder.typicode.com/`
+})
+
+
 
 // GET REQUEST
 function getTodos() {
-    console.log('GET Request');
-  }
-  
-  // POST REQUEST
-  function addTodo() {
-    console.log('POST Request');
-  }
-  
-  // PUT/PATCH REQUEST
-  function updateTodo() {
-    console.log('PUT/PATCH Request');
-  }
-  
-  // DELETE REQUEST
-  function removeTodo() {
-    console.log('DELETE Request');
-  }
-  
-  // SIMULTANEOUS DATA
-  function getData() {
-    console.log('Simultaneous Request');
-  }
-  
-  // CUSTOM HEADERS
-  function customHeaders() {
+    // axios({
+    //     method: 'get',
+    //     url: 'https://jsonplaceholder.typicode.com/todos',
+    //     params: {
+    //         _limit: 5
+    //     }
+
+    // }).then(res => showOutput(res)).catch(err => console.error(err))
+
+    axiosClient.get('/todos?_limit=5').then(res => showOutput(res)).catch(err => console.error(err));
+
+}
+
+// POST REQUEST
+function addTodo() {
+    axiosClient.post('/todos', { title: 'New ToDo', completed: false }).then(res => showOutput(res)).catch(err => console.error(err));
+}
+
+// PUT/PATCH REQUEST
+function updateTodo() {
+    
+    //axiosClient.put('/todos/1', { title: 'Updated ToDo'  }).then(res => showOutput(res)).catch(err => console.error(err));
+    
+   // axiosClient.patch('/todos/2', { title: 'Updated ToDo'  }).then(res => showOutput(res)).catch(err => console.error(err));
+
+    axios.all([ 
+        axiosClient.put('/todos/1', { title: 'Updated ToDo'  }),
+        axiosClient.patch('/todos/2', { title: 'Patched ToDo'  })
+    ]).then(axios.spread((updated, patched)=> showOutput(updated) )).catch(err => console.error(err));
+}
+
+// DELETE REQUEST
+function removeTodo() {
+   
+    axiosClient.delete('/todos/1').then(res => showOutput(res)).catch(err => console.error(err));
+}
+
+// SIMULTANEOUS DATA
+function getData() {
+ 
+    axios.all([ 
+        axiosClient.put('/todos/1', { title: 'Updated ToDo'  }),
+        axiosClient.patch('/todos/2', { title: 'Patched ToDo'  })
+    ]).then(axios.spread((updated, patched)=> showOutput(patched) )).catch(err => console.error(err));
+}
+
+// CUSTOM HEADERS
+function customHeaders() {
     console.log('Custom Headers');
-  }
-  
-  // TRANSFORMING REQUESTS & RESPONSES
-  function transformResponse() {
+}
+
+// TRANSFORMING REQUESTS & RESPONSES
+function transformResponse() {
     console.log('Transform Response');
-  }
-  
-  // ERROR HANDLING
-  function errorHandling() {
+}
+
+// ERROR HANDLING
+function errorHandling() {
     console.log('Error Handling');
-  }
-  
-  // CANCEL TOKEN
-  function cancelToken() {
+}
+
+// CANCEL TOKEN
+function cancelToken() {
     console.log('Cancel Token');
-  }
-  
-  // INTERCEPTING REQUESTS & RESPONSES
-  
-  // AXIOS INSTANCES
-  
-  // Show output in browser
-  function showOutput(res) {
+}
+
+// INTERCEPTING REQUESTS & RESPONSES
+
+// AXIOS INSTANCES
+
+// Show output in browser
+function showOutput(res) {
     document.getElementById('res').innerHTML = `
     <div class="card card-body mb-4">
       <h5>Status: ${res.status}</h5>
@@ -82,7 +113,7 @@ function getTodos() {
       </div>
     </div>
   `;
-  }
+}
 // Event listeners
 
 
@@ -95,7 +126,7 @@ document.getElementById('delete').addEventListener('click', removeTodo);
 document.getElementById('sim').addEventListener('click', getData);
 document.getElementById('headers').addEventListener('click', customHeaders);
 document
-  .getElementById('transform')
-  .addEventListener('click', transformResponse);
+    .getElementById('transform')
+    .addEventListener('click', transformResponse);
 document.getElementById('error').addEventListener('click', errorHandling);
 document.getElementById('cancel').addEventListener('click', cancelToken);
