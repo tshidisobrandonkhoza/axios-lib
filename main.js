@@ -29,35 +29,48 @@ function addTodo() {
 
 // PUT/PATCH REQUEST
 function updateTodo() {
-    
-    //axiosClient.put('/todos/1', { title: 'Updated ToDo'  }).then(res => showOutput(res)).catch(err => console.error(err));
-    
-   // axiosClient.patch('/todos/2', { title: 'Updated ToDo'  }).then(res => showOutput(res)).catch(err => console.error(err));
 
-    axios.all([ 
-        axiosClient.put('/todos/1', { title: 'Updated ToDo'  }),
-        axiosClient.patch('/todos/2', { title: 'Patched ToDo'  })
-    ]).then(axios.spread((updated, patched)=> showOutput(updated) )).catch(err => console.error(err));
+    //axiosClient.put('/todos/1', { title: 'Updated ToDo'  }).then(res => showOutput(res)).catch(err => console.error(err));
+
+    // axiosClient.patch('/todos/2', { title: 'Updated ToDo'  }).then(res => showOutput(res)).catch(err => console.error(err));
+
+    axios.all([
+        axiosClient.put('/todos/1', { title: 'Updated ToDo' }),
+        axiosClient.patch('/todos/2', { title: 'Patched ToDo' })
+    ]).then(axios.spread((updated, patched) => showOutput(updated))).catch(err => console.error(err));
 }
 
 // DELETE REQUEST
 function removeTodo() {
-   
+
     axiosClient.delete('/todos/1').then(res => showOutput(res)).catch(err => console.error(err));
 }
 
 // SIMULTANEOUS DATA
 function getData() {
- 
-    axios.all([ 
-        axiosClient.put('/todos/1', { title: 'Updated ToDo'  }),
-        axiosClient.patch('/todos/2', { title: 'Patched ToDo'  })
-    ]).then(axios.spread((updated, patched)=> showOutput(patched) )).catch(err => console.error(err));
+
+    axios.all([
+        axiosClient.put('/todos/1', { title: 'Updated ToDo' }),
+        axiosClient.patch('/todos/2', { title: 'Patched ToDo' })
+    ]).then(axios.spread((updated, patched) => showOutput(patched))).catch(err => console.error(err));
 }
 
 // CUSTOM HEADERS
 function customHeaders() {
-    console.log('Custom Headers');
+    const token = 'xxx-xxx-xxx';
+    const config = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+    }
+
+
+    axiosClient.post('/todos', {
+        title: 'News ToDo',
+        completed: false
+    }, config)
+        .then(res => showOutput(res))
+        .catch(err => console.log(err))
+    //console.log('Custom Headers');
 }
 
 // TRANSFORMING REQUESTS & RESPONSES
@@ -76,7 +89,13 @@ function cancelToken() {
 }
 
 // INTERCEPTING REQUESTS & RESPONSES
+axios.interceptors.request.use(
+    config => {
+        console.log(`${config.method} : used,  ${config.url} : url used. at ${new Date().getTime()}`);
 
+        return config;
+    }
+)
 // AXIOS INSTANCES
 
 // Show output in browser
